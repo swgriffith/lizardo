@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: lizardo-metrics
+  namespace: monitoring
+  labels:
+    k8s-app: lizardo
+spec:
+  selector:
+    matchLabels:
+      k8s-app: lizardo
+  namespaceSelector:
+    matchNames:
+      - monitoring
+  endpoints:
+  - port: metrics
+    interval: 10s
+    honorLabels: true

@@ -1,13 +1,14 @@
 apiVersion: v1
 kind: Endpoints
 metadata:
-    name: lizard-metrics
-    labels:
-        prometheus: k8s
+  name: lizardo-metrics
+  namespace: monitoring
+  labels:
+    k8s-app: lizardo
 subsets:
-    - addresses:
-    - ip: http://192.168.1.104/
-ports:
-    - name: metrics
-      port: 8000
-      protocol: TCP
+  - addresses:
+      - ip: 192.168.1.104
+    ports:
+      - name: metrics
+        port: 8000
+        protocol: TCP

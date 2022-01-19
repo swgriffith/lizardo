@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: lizardo-metrics
+  namespace: monitoring
+  labels:
+      k8s-app: lizardo
+spec:
+  type: ExternalName
+  externalName: 192.168.1.104
+  ports:
+  - name: metrics
+    port: 8000
+    protocol: TCP
+    targetPort: 8000
