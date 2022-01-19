@@ -1,0 +1,12 @@
+[Unit]
+Description=SHT30 Sensor Metrics Service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=python3 /opt/lizardo-metrics/lizardodeamon.py
+
+[Install]
+WantedBy=multi-user.target
