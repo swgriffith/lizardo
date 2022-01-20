@@ -6,7 +6,7 @@ StartLimitIntervalSec=0
 [Service]
 Type=simple
 Restart=always
-ExecStart=python3 /opt/lizardo-metrics/lizardodeamon.py
+ExecStart=python3 /opt/lizardo-metrics/lizardodaemon.py
 
 [Install]
 WantedBy=multi-user.target
