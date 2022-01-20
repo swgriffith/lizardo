@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
-
+from Adafruit_GPIO import I2C
 import logging
 import time
-
 import smbus
-
 from prometheus_client import Gauge, start_http_server
 from systemd.journal import JournalHandler
 
@@ -14,21 +12,36 @@ log.addHandler(JournalHandler())
 log.setLevel(logging.INFO)
 
 # The time in seconds between sensor reads
-READ_INTERVAL = 30.0
+READ_INTERVAL = 5.0
 
 # Create Prometheus gauges for humidity and temperature in
 # Celsius and Fahrenheit
-gh = Gauge('sht30_humidity_percent','Humidity percentage measured by the SHT30 Sensor')
-gt = Gauge('sht30_temperature','Temperature measured by the SHT30 Sensor', ['scale'])
+# Sensor 1 - Multiplexer Channel 0
+gh1 = Gauge('sht30_1_humidity_percent','Humidity percentage measured by the SHT30 Sensor 1')
+gt1 = Gauge('sht30_1_temperature','Temperature measured by the SHT30 Sensor 1', ['scale'])
+# Sensor 2 - Multiplexer Channel 1
+gh2 = Gauge('sht30_2_humidity_percent','Humidity percentage measured by the SHT30 Sensor 2')
+gt2 = Gauge('sht30_2_temperature','Temperature measured by the SHT30 Sensor 2', ['scale'])
 
 # Initialize the labels for the temperature scale
-gt.labels('celsius')
-gt.labels('fahrenheit')
+gt1.labels('celsius')
+gt1.labels('fahrenheit')
+gt2.labels('celsius')
+gt2.labels('fahrenheit')
 
+tca = I2C.get_i2c_device(address=0x70)
+
+def tca_select(channel):
+    """Select an individual channel."""
+    if channel > 7:
+        return
+    tca.writeRaw8(1 << channel)
 
 def read_sensor():
     try:
         # Initialize the SHT30 sensor
+        # Select channel 0
+        tca_select()
         # Get I2C bus
         bus = smbus.SMBus(1)
         # SHT30 address, 0x44(68)
@@ -50,11 +63,11 @@ def read_sensor():
         log.error("RuntimeError: {}".format(e))
 
     if humidity is not None and cTemp is not None and fTemp is not None:
-        gh.set(humidity)
-        gt.labels('celsius').set(cTemp)
-        gt.labels('fahrenheit').set(fTemp)
+        gh1.set(humidity)
+        gt1.labels('celsius').set(cTemp)
+        gt1.labels('fahrenheit').set(fTemp)
 
-        log.info("Temp:{0:0.1f}*C, Temp:{1:0.1f}*F, Humidity: {2:0.1f}%".format(cTemp, fTemp, humidity))
+        log.info("Sensor 1 - Temp:{0:0.1f}*C, Temp:{1:0.1f}*F, Humidity: {2:0.1f}%".format(cTemp, fTemp, humidity))
 
     time.sleep(READ_INTERVAL)
 
