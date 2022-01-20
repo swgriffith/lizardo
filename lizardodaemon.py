@@ -13,14 +13,6 @@ log = logging.getLogger('sht30_sensor')
 log.addHandler(JournalHandler())
 log.setLevel(logging.INFO)
 
-# Initialize the SHT30 sensor
-# Get I2C bus
-bus = smbus.SMBus(1)
-# SHT30 address, 0x44(68)
-# Send measurement command, 0x2C(44)
-#               0x06(06)        High repeatability measurement
-bus.write_i2c_block_data(0x44, 0x2C, [0x06])
-
 # The time in seconds between sensor reads
 READ_INTERVAL = 30.0
 
@@ -36,6 +28,14 @@ gt.labels('fahrenheit')
 
 def read_sensor():
     try:
+        # Initialize the SHT30 sensor
+        # Get I2C bus
+        bus = smbus.SMBus(1)
+        # SHT30 address, 0x44(68)
+        # Send measurement command, 0x2C(44)
+        #               0x06(06)        High repeatability measurement
+        bus.write_i2c_block_data(0x44, 0x2C, [0x06])
+        
         # SHT30 address, 0x44(68)
         # Read data back from 0x00(00), 6 bytes
         # cTemp MSB, cTemp LSB, cTemp CRC, Humididty MSB, Humidity LSB, Humidity CRC
