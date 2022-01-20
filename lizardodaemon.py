@@ -54,7 +54,7 @@ def read_sensor():
         gt.labels('celsius').set(cTemp)
         gt.labels('fahrenheit').set(fTemp)
 
-        log.info("Temp:{0:0.1f}*C, Temp:{0:0.1f}*F, Humidity: {1:0.1f}%".format(cTemp, fTemp, humidity))
+        log.info("Temp:{0:0.1f}*C, Temp:{1:0.1f}*F, Humidity: {2:0.1f}%".format(cTemp, fTemp, humidity))
 
     time.sleep(READ_INTERVAL)
 
