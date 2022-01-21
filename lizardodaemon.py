@@ -17,17 +17,16 @@ READ_INTERVAL = 5.0
 # Create Prometheus gauges for humidity and temperature in
 # Celsius and Fahrenheit
 # Sensor 1 - Multiplexer Channel 0
-gh1 = Gauge('sht30_1_humidity_percent','Humidity percentage measured by the SHT30 Sensor 1')
-gt1 = Gauge('sht30_1_temperature','Temperature measured by the SHT30 Sensor 1', ['scale'])
-# Sensor 2 - Multiplexer Channel 1
-gh2 = Gauge('sht30_2_humidity_percent','Humidity percentage measured by the SHT30 Sensor 2')
-gt2 = Gauge('sht30_2_temperature','Temperature measured by the SHT30 Sensor 2', ['scale'])
+gh = Gauge('sht30_humidity_percent','Humidity percentage measured by the SHT30 Sensors')
+gt = Gauge('sht30_temperature','Temperature measured by the SHT30 Sensors', ['scale'])
 
 # Initialize the labels for the temperature scale
-gt1.labels('celsius')
-gt1.labels('fahrenheit')
-gt2.labels('celsius')
-gt2.labels('fahrenheit')
+gt.labels('sensor1_humidity')
+gt.labels('sensor1_celsius')
+gt.labels('sensor1_fahrenheit')
+gt.labels('sensor2_humidity')
+gt.labels('sensor2_celsius')
+gt.labels('sensor2_fahrenheit')
 
 tca = I2C.get_i2c_device(address=0x70)
 
@@ -63,9 +62,9 @@ def read_sensors():
         log.error("RuntimeError: {}".format(e))
 
     if humidity is not None and cTemp is not None and fTemp is not None:
-        gh1.set(humidity)
-        gt1.labels('celsius').set(cTemp)
-        gt1.labels('fahrenheit').set(fTemp)
+        gh.labels('sensor1_humidity').set(humidity)
+        gt.labels('sensor1_celsius').set(cTemp)
+        gt.labels('sensor1_fahrenheit').set(fTemp)
 
         log.info("Sensor 1 - Temp:{0:0.1f}*C, Temp:{1:0.1f}*F, Humidity: {2:0.1f}%".format(cTemp, fTemp, humidity))
 
@@ -94,9 +93,9 @@ def read_sensors():
         log.error("RuntimeError: {}".format(e))
 
     if humidity is not None and cTemp is not None and fTemp is not None:
-        gh2.set(humidity)
-        gt2.labels('celsius').set(cTemp)
-        gt2.labels('fahrenheit').set(fTemp)
+        gh.labels('sensor2_humidity').set(humidity)
+        gt.labels('sensor2_celsius').set(cTemp)
+        gt.labels('sensor2_fahrenheit').set(fTemp)
 
         log.info("Sensor 2 - Temp:{0:0.1f}*C, Temp:{1:0.1f}*F, Humidity: {2:0.1f}%".format(cTemp, fTemp, humidity))
 
