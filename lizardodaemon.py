@@ -17,14 +17,14 @@ READ_INTERVAL = 5.0
 # Create Prometheus gauges for humidity and temperature in
 # Celsius and Fahrenheit
 # Sensor 1 - Multiplexer Channel 0
-gh = Gauge('sht30_humidity_percent','Humidity percentage measured by the SHT30 Sensors')
+gh = Gauge('sht30_humidity_percent','Humidity percentage measured by the SHT30 Sensors', ['scale'])
 gt = Gauge('sht30_temperature','Temperature measured by the SHT30 Sensors', ['scale'])
 
 # Initialize the labels for the temperature scale
-gt.labels('sensor1_humidity')
+gh.labels('sensor1_humidity')
 gt.labels('sensor1_celsius')
 gt.labels('sensor1_fahrenheit')
-gt.labels('sensor2_humidity')
+gh.labels('sensor2_humidity')
 gt.labels('sensor2_celsius')
 gt.labels('sensor2_fahrenheit')
 
