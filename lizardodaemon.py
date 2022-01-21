@@ -21,12 +21,10 @@ gh = Gauge('sht30_humidity_percent','Humidity percentage measured by the SHT30 S
 gt = Gauge('sht30_temperature','Temperature measured by the SHT30 Sensors', ['scale'])
 
 # Initialize the labels for the temperature scale
+gh.labels('sensor0_humidity')
+gt.labels('sensor0_fahrenheit')
 gh.labels('sensor1_humidity')
-gt.labels('sensor1_celsius')
 gt.labels('sensor1_fahrenheit')
-gh.labels('sensor2_humidity')
-gt.labels('sensor2_celsius')
-gt.labels('sensor2_fahrenheit')
 
 tca = I2C.get_i2c_device(address=0x70)
 
@@ -62,11 +60,10 @@ def read_sensors(channel):
         log.error("RuntimeError: {}".format(e))
 
     if humidity is not None and cTemp is not None and fTemp is not None:
-        gh.labels("sensor{}_humidity".format(channel)).set(humidity)
-        gt.labels("sensor{}_celsius".format(channel)).set(cTemp)
-        gt.labels("sensor{}_fahrenheit".format(channel)).set(fTemp)
+        gh.labels("sensor{0}_humidity".format(channel)).set(humidity)
+        gt.labels("sensor{0}_fahrenheit".format(channel)).set(fTemp)
 
-        log.info("Sensor {0} - Temp:{1:0.1f}*C, Temp:{2:0.1f}*F, Humidity: {3:0.1f}%".format(channel, cTemp, fTemp, humidity))
+        log.info("Sensor {0} - Temp:{1:0.1f}*F, Humidity: {2:0.1f}%".format(channel, fTemp, humidity))
 
 if __name__ == "__main__":
     # Expose metrics
